@@ -6,6 +6,24 @@
 </header>
 
 
+{% with messages = get_flashed_messages(with_categories=true)%} {%if
+    messages%} {% for category,message in messages%} {% if category == 'error'
+    %}
+    <div class="alert" role="alert">
+      {{message}}
+      <span class="closebtn" onclick="this.parentElement.style.display='none';"
+        >&times;</span
+      >
+    </div>
+    {% else %}
+    <div class="alert-success" role="alert">
+      {{message}}
+      <span class="closebtn" onclick="this.parentElement.style.display='none';"
+        >&times;</span
+      >
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
 <section>
     
 {% block body %}

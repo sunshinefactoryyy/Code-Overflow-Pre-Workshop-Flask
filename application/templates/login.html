@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+<br>
+<br>
+<a href="/">Home</a>
+<br>
+<br>
+<p> Enter your email and password to log in</p>
+
+<div class='form'>
+    <form method='POST' action=''>
+        {{ form.hidden_tag() }}
+        
+        {{ form.Email_address.label }} {{ form.Email_address }} 
+        <br>
+        {{ form.Password.label }} {{ form.Password }} 
+        <br>
+
+        {{ form.Submit }}
+    </form>
+</div>
+
+{% endblock body %}

@@ -1,13 +1,19 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, SelectField, FloatField, HiddenField
+from wtforms import StringField, SubmitField, HiddenField, SelectField, FloatField, HiddenField, PasswordField
 from wtforms.fields.html5 import EmailField, DateField
 from wtforms.validators import DataRequired, Length, ValidationError
 
 
-class AddUser(FlaskForm):
+class Login(FlaskForm):
+    Email_address = EmailField('Email', validators=[DataRequired()]) 
+    Password = PasswordField('Password', validators=[DataRequired()])
+    Submit = SubmitField('Log In')
+
+class SignUp(FlaskForm):
     Name = StringField('First Name', validators=[DataRequired(), Length(min=4, max=15)]) 
     Email_address = EmailField('Email', validators=[DataRequired()]) 
-    Submit = SubmitField('Add new user')
+    Password = PasswordField('Password', validators=[DataRequired()])
+    Submit = SubmitField('Sign Up')
 
 
 Type_of_expense =["Personal", "House", "Transport", "Pets", "Miscellaneous"]

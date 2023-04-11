@@ -9,31 +9,13 @@
 <br>
 <br>
 
-{% if users%}
-
-<table>
-    <tr>
-        <th>Profiles</th>
-    </tr>
-    {% for user in users%}
-    <tr>
-        
-        <td><a href="/expenses?user={{ user.name }}">{{ user.name }}</a></td>
-        
-    </tr>
-    
-    {% endfor %}
-    
-</table>
-<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/add_user">Add a new user</a>
-{% else%}
 <p> Ready to track your expenses?</p>
 
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/add_user">Create your account</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/login">Log in</a>
 
-{% endif %}
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/signup">Create your account</a>
+
 
 {% endblock body %}
