@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block body %}
+
+<style>
+
+    .row {text-align: center;} 
+
+    table, th, td {border: 1px solid black;}  
+
+    .line {background-color:#00FEFE}
+    .line2 {background-color:#ffc7b6}
+
+    
+
+</style>
+{% if expenses%}
+<br>
+<br>
+<span class = "line">Hello, {{ name_user }}, these are your expenses:</span>
+<br>
+<br>
+<table>
+    <tr>
+        <th>Type</th>
+        <th>Description of the expense</th>
+        <th>Date</th>
+        <th>Amount (£)</th>
+        <th>Action</th>
+    </tr>
+    {% for expense in expenses %}
+    <tr class="row">
+        <td>{{ expense.type_expense }}</td>
+        <td>{{ expense.description_expense }}</td>
+        <td>{{ expense.date_purchase }}</td>
+        <td>{{ expense.amount }}</td>
+        <td><a href="/mod_expense?user={{ name_user }}&id={{expense.expense_id}}">Edit/Delete</a></td>
+
+    </tr>
+    
+    {% endfor %}
+
+    <p>Total Expended Amount (£): {{ total }}</p>
+
+</table>
+
+<p> Would you like to add a new expense?</p>
+
+    <a href="/add_expense?user={{ name_user }}"> Add expenses</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/">Home</a>
+{% else%}
+<br>
+<br>
+<span class = "line2"> {{ name_user }}, would you like to start adding expenses?</span>
+<br>
+<br>
+<a href="/add_expense?user={{ name_user }}"> Add expenses</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/">Home</a>
+
+{% endif %}
+
+
+{% endblock body %}
