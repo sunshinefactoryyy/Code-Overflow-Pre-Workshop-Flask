@@ -1,42 +1,12 @@
-from application import app, db
-from flask import render_template, request, url_for, redirect
-from application.models import Users, Expenses
-from application.forms import AddUser, AddExpense, ModExpense
+from flask import Blueprint, render_template, request, url_for, redirect
+from . import db
+from .models import Users, Expenses
+from .forms import AddExpense, ModExpense
 from datetime import date
 
-@app.route('/')
-def home(): 
-    count_users = Users.query.count()
-    if count_users==0: 
-        return render_template("home.html")
-    else: 
-        users = Users.query.all() 
-        return render_template("home.html", users=users)
+views = Blueprint('views', __name__)
 
-@app.route('/add_user', methods=['GET', 'POST'])
-def adding_new_users():
-
-    form = AddUser (request.form)
-
-    if request.method == 'GET':
-        return render_template("add_user.html", form=form)
-    else:
-        try: 
-            new_user = Users (name = request.values.get ("Name"), email_address = request.values.get ("Email_address") )
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect(url_for("home"))
-
-        except Exception as e:
-            error= "" 
-            if "users.email_address" in str(e): 
-                    error = "This email is already in use, please use a different email"
-            else: 
-                    error = "This name is already in use, please use a different name"
-            return render_template('add_user.html', form=form, error_db_insert=error)
-        
-
-@app.route('/expenses')
+@views.route('/expenses')
 def show_expenses():
     name_user = request.values.get("user")
 
@@ -59,13 +29,13 @@ def show_expenses():
 
             return render_template("expenses.html", expenses=expenses_user, name_user = name_user, total =total_amount) 
 
-@app.route('/add_expense', methods=['GET', 'POST'] )
+@views.route('/add_expense', methods=['GET', 'POST'] )
 def adding_new_expenses():
     
     name_user = request.values.get("user")
 
     if name_user ==None: 
-        return redirect (url_for("home"))
+        return redirect (url_for("auth.home"))
     else: 
         form = AddExpense(request.form)
 
@@ -83,19 +53,19 @@ def adding_new_expenses():
                 db.session.add(new_expense)
                 db.session.commit()
                        
-                return redirect(url_for("show_expenses", user = name_user))
+                return redirect(url_for("views.show_expenses", user = name_user))
 
                 
             else: 
                 return render_template("add_expense.html", form=form)
 
-@app.route('/mod_expense', methods=['GET', 'POST'] )
+@views.route('/mod_expense', methods=['GET', 'POST'] )
 def modifying_expenses():   
     name_user = request.values.get("user")
     expense_id = request.values.get ("id")
 
     if name_user == None or expense_id == None: 
-        return redirect (url_for("home"))
+        return redirect (url_for("auth.home"))
     else: 
 
         query = db.session.query (Expenses).filter (Expenses.expense_id == expense_id)
@@ -121,7 +91,7 @@ def modifying_expenses():
                 query3 = Expenses.query.filter (Expenses.expense_id == expense_id).first() 
                 db.session.delete (query3)
                 db.session.commit() 
-                return redirect(url_for("show_expenses", user = name_user))
+                return redirect(url_for("views.show_expenses", user = name_user))
 
             if form.validate(): 
             
@@ -134,7 +104,7 @@ def modifying_expenses():
                         element.amount = form.Amount.data 
                     db.session.commit() 
                 
-                    return redirect(url_for("show_expenses", user = name_user))
+                    return redirect(url_for("views.show_expenses", user = name_user))
             else: 
                 return render_template("mod_expense.html", form=form)
 

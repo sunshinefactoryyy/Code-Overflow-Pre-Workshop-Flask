@@ -1,8 +1,8 @@
-from application import db 
+from . import db 
 import datetime
 
 class Users(db.Model): 
-    name = db.Column(db.String(50), primary_key=True, unique = True, nullable=False)
+    name = db.Column(db.String(50), primary_key=True, nullable=False)
     email_address = db.Column(db.String(50), nullable=False, unique = True)
     expenses = db.relationship('Expenses', backref='users')
 

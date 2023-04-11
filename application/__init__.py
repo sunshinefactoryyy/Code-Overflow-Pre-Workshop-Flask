@@ -1,10 +1,27 @@
-from flask import Flask
+from flask import Flask 
 from flask_sqlalchemy import SQLAlchemy
+from os import path
 
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_object('config')
+db = SQLAlchemy()
 
-app.config["SQLALCHEMY_DATABASE_URI"]
-db = SQLAlchemy(app)
+def create_app():
 
-from application import routes
+    app = Flask(__name__)
+    app.config.from_object('config_template.Config')
+
+    from .views import views
+    from .auth import auth
+
+    app.register_blueprint(views, url_prefix='/')
+    app.register_blueprint(auth, url_prefix='/')
+
+
+    from .models import Users, Expenses
+
+    db.init_app(app)
+
+    if not path.exists(app.config['DATABASE_NAME']):
+        db.create_all(app=app)
+        print('Created Database!')
+
+    return app
