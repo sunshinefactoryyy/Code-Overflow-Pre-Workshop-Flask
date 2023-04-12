@@ -9,16 +9,50 @@
 
 <div class='form'>
     <form method='POST' action=''>
-        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
 
-        {{ form.Name.label }} {{ form.Name }} 
+        {{ form.name.label }}
+        {{ form.name }}
+        
+        {% if form.name.errors %}
+            {% for error in form.name.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+
         <br>
-        {{ form.Email_address.label }} {{ form.Email_address }} 
+        {{ form.email.label }}
+        {{ form.email }}
+        
+        {% if form.email.errors %}
+            {% for error in form.email.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+
         <br>
-        {{ form.Password.label }} {{ form.Password }} 
+        {{ form.password.label }}
+        {{ form.password }}
+        
+        {% if form.password.errors %}
+            {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+
+        <br>
+        {{ form.confirm_password.label }}
+        {{ form.confirm_password }}
+        
+        {% if form.confirm_password.errors %}
+            {% for error in form.confirm_password.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+
         <br>
 
-        {{ form.Submit }}
+        {{ form.submit }}
     </form>
 </div>
 

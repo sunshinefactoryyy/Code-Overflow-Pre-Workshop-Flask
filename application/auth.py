@@ -10,56 +10,48 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/')
 def home(): 
-    print(Users.query.all())
     if current_user.is_active:
         return redirect(url_for("views.show_expenses"))
-    
     return render_template("home.html")
 
 
 @auth.route('/signup', methods=['GET','POST'])
 def signup():
+    if current_user.is_active:
+        return redirect(url_for("views.show_expenses"))
+    
     form = SignUp(request.form)
+    if form.validate_on_submit():
+        name = form.name.data if form.name.data else ''
+        new_user = Users(name=name, email=form.email.data, password=generate_password_hash(form.password.data, method='sha256'))
+        db.session.add(new_user)
+        db.session.commit()
 
-    if request.method == "POST":
-        name = request.form.get('Name')
-        email = request.form.get('Email_address')
-        password = request.form.get('Password')
-
-        try:
-            new_user = Users(name=name, email_address=email, password=generate_password_hash(password, method='sha256'))
-            db.session.add(new_user)
-            db.session.commit()
-        except exc.IntegrityError as e:
-            if 'UNIQUE constraint failed' in str(e):
-                flash("This email is already in use, please use a different email")
-        else:
-            flash('Account created!', category='success')
-            return redirect(url_for('auth.home')) 
+        flash('Account created!', category='success')
+        return redirect(url_for('auth.login')) 
 
     return render_template("signup.html", form=form)
 
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
+    if current_user.is_active:
+        return redirect(url_for("views.show_expenses"))
+
     form = Login(request.form)
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=form.email.data).first()
 
-    if request.method == "POST":
-        email = request.form.get('Email_address')
-        password = request.form.get('Password')
-
-        user = Users.query.filter_by(email_address=email).first()
         if user:
-
-            if check_password_hash(user.password, password):
+            if check_password_hash(user.password, form.password.data):
                 flash('Logged in successfully', category='success')
                 login_user(user, remember=True)
                 return redirect(url_for('views.show_expenses'))
+            
             else:
-                flash('Incorrect password, try again', category='error')
-        
+                flash('Incorrect password, please try again.', category='error')
         else:
-            flash('Email does not exist', category='error')
+            flash('No account with that email address.', category='error')
 
     return render_template('login.html', form=form)
 

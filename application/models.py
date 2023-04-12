@@ -3,10 +3,11 @@ from flask_login import UserMixin
 import datetime
 
 class Users(db.Model, UserMixin): 
-    id = db.Column(db.Integer, primary_key=True)
-    email_address = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(150))
-    name = db.Column(db.String(50))
+    def get_id(self):
+        return self.email     
+    email = db.Column(db.String(100), primary_key=True, unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(20))
     expenses = db.relationship('Expenses', backref='users')
 
 class Expenses (db.Model):
@@ -15,5 +16,5 @@ class Expenses (db.Model):
     description_expense = db.Column(db.String(120), nullable=False)
     date_purchase = db.Column(db.String(10), nullable = False) 
     amount = db.Column(db.Float, nullable = False)
-    user_id = db.Column(db.String(50), db.ForeignKey('users.id'), nullable=False)
+    user = db.Column(db.String(100), db.ForeignKey('users.email'), nullable=False)
 

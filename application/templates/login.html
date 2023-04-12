@@ -9,14 +9,22 @@
 
 <div class='form'>
     <form method='POST' action=''>
-        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
         
-        {{ form.Email_address.label }} {{ form.Email_address }} 
+        {{ form.email.label }}
+        {{ form.email }}
+        
+        {% if form.email.errors %}
+            {% for error in form.email.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+
         <br>
-        {{ form.Password.label }} {{ form.Password }} 
+        {{ form.password.label }} {{ form.password }} 
         <br>
 
-        {{ form.Submit }}
+        {{ form.submit }}
     </form>
 </div>
 

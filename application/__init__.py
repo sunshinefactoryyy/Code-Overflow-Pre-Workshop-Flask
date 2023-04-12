@@ -1,9 +1,11 @@
 from flask import Flask 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf.csrf import CsrfProtect
 from os import path
 
 db = SQLAlchemy()
+csrf = CsrfProtect()
 
 def create_app():
 
@@ -32,6 +34,8 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(id):
-        return Users.query.get(int(id))
+        return Users.query.get(id)
 
+
+    csrf.init_app(app)
     return app
