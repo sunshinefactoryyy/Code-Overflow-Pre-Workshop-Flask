@@ -1,43 +1,6 @@
-{% extends "base.html" %}
-{% block body %}
-<br>
-<br>
-<a href="/expenses">Dashboard</a>
-<br>
-<br>
+{% extends "expense_base.html" %}
+{% block submit %}
 
+<button type='submit'>Add Expense</button>
 
-<div class='form'>
-    <form method='POST' action=''>
-        {{ form.hidden_tag() }}
-        {{ form.Type.label }} {{ form.Type }} 
-        <br>
-        {{ form.Description.label }} {{ form.Description }} 
-        <br>
-        {{ form.Date.label }} {{ form.Date }} 
-        <br>
-
-        {% if form.Amount.errors %}
-            {{ form.Amount.label }} {{ form.Amount (placeholder = "Ex: 5.32")}} 
-            {% for error in form.Amount.errors %}
-                <p >{{ error }}</p>
-            {% endfor%}
-            
-            {% else %}
-            {{ form.Amount.label }} {{ form.Amount (placeholder = "Ex:5.32")}} 
-        {% endif %}
-        
-        <br>
-        <br>
-        <br>
-        {{ form.Add}}
-    </form>
-</div>
-
-
-
-
-{% endblock body %}
-
-
-
+{% endblock submit %}

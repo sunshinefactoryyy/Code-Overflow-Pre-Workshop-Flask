@@ -1,104 +1,95 @@
-from flask import Blueprint, render_template, request, url_for, redirect
+from flask import Blueprint, flash, render_template, request, url_for, redirect
 from . import db
-from .models import Users, Expenses
-from .forms import AddExpense, ModExpense
+from .models import Expenses
+from .forms import EditExpense
 from flask_login import current_user, login_required
 from datetime import date
 
 views = Blueprint('views', __name__)
 
+# CREATE
+@views.route('/add_expense', methods=['GET', 'POST'])
+@login_required
+def adding_new_expenses():
 
+    form = EditExpense(request.form)
+
+    if form.validate_on_submit(): 
+        new_expense = Expenses(
+            type= form.type.data,
+            description = form.description.data, 
+            date_purchase = form.date.data, 
+            amount = form.amount.data, 
+            user = current_user.email
+        ) 
+        db.session.add(new_expense)
+        db.session.commit()
+                    
+        return redirect(url_for("views.show_expenses"))
+
+    return render_template("add_expense.html", form=form)
+
+
+# READ
 @views.route('/expenses')
 @login_required
 def show_expenses():
 
-    expenses_user = db.session.query(Expenses).join(Users).filter(Users.email==current_user.email).all()
-    if expenses_user==[]: 
-        return render_template("expenses.html", name_user=current_user.name)
+    expenses_user = Expenses.query.filter_by(user=current_user.email).all()
+        
+    total_amount = 0
+    for expense in expenses_user: 
+        total_amount += expense.amount
+
+    return render_template("expenses.html", expenses=expenses_user, name_user=current_user.name, total=round(total_amount,2)) 
+
+
+# UPDATE
+@views.route('/mod_expense/<int:expense_id>', methods=['GET', 'POST'])
+@login_required
+def modifying_expenses(expense_id):
+
+    expense = Expenses.query.filter(Expenses.user==current_user.email, Expenses.expense_id==expense_id).first()
+    if not expense:
+        flash('You do not have this expense.', category='error')
+        return redirect(url_for("views.show_expenses"))
+    
+
+    form = EditExpense(request.form)
+
+    if form.validate_on_submit():
+        expense.type = form.type.data
+        expense.description = form.description.data 
+        expense.date_purchase = form.date.data
+        expense.amount = form.amount.data 
+        db.session.commit() 
+        
+        return redirect(url_for("views.show_expenses"))
     
     else:
-        query = Expenses.query.filter(Expenses.user==current_user.email).all()
-            
-        Total_amount = 0
-        for data in query: 
-            data.amount
-            Total_amount +=data.amount
-        total_amount = round(Total_amount,2)
-
-        return render_template("expenses.html", expenses=expenses_user, name_user=current_user.name, total=total_amount) 
-
-
-@views.route('/add_expense', methods=['GET', 'POST'] )
-@login_required
-def adding_new_expenses():
-
-    form = AddExpense(request.form)
-    if request.method == 'GET':
-        return render_template("add_expense.html", form=form)
-    
-    else:
-        if form.validate(): 
-            new_expense = Expenses(
-                type_expense= request.values.get("Type"),        
-                description_expense = request.values.get("Description"), 
-                date_purchase = request.values.get("Date"), 
-                amount = request.values.get("Amount"), 
-                user = current_user.email
-            ) 
-
-            db.session.add(new_expense)
-            db.session.commit()
-                    
-            return redirect(url_for("views.show_expenses"))
-        else: 
-            return render_template("add_expense.html", form=form)
-
-
-@views.route('/mod_expense', methods=['GET', 'POST'] )
-@login_required
-def modifying_expenses():   
-
-    expense_id = request.values.get("id")
-    query = db.session.query(Expenses).filter(Expenses.expense_id==expense_id)
-
-    for data in query: 
-        type_expense = data.type_expense
-        description_expense = data.description_expense
-        date_purchase = data.date_purchase
-        amount = data.amount
-
-    if request.method == 'GET':
-        form = ModExpense(data= {"Type": type_expense,
-                                "Description": description_expense,
-                                "Date": date(int(date_purchase[:4]), int(date_purchase[5:7]), int(date_purchase[8:])),
-                                "Amount": amount })
+        if request.method == 'GET':
+            form = EditExpense(
+                data = {
+                    "type": expense.type,
+                    "description": expense.description,
+                    "date": date(int(expense.date_purchase[:4]), int(expense.date_purchase[5:7]), int(expense.date_purchase[8:])),
+                    "amount": expense.amount 
+                    }
+                )
         return render_template("mod_expense.html", form=form)
-    
-    else:
-        form = ModExpense(request.form)
-        if request.form.get("Delete"): 
-            query3 = Expenses.query.filter(Expenses.expense_id==expense_id).first() 
 
-            db.session.delete (query3)
-            db.session.commit() 
-            return redirect(url_for("views.show_expenses"))
 
-        if form.validate(): 
-            if request.form.get ("Save_changes"): 
-                query2 = Expenses.query.filter(Expenses.expense_id==expense_id).all()
+# DELETE
+@views.route('/del_expense', methods=['POST'])
+@login_required
+def deleting_expenses():
 
-                for element in query2: 
-                    element.type_expense = form.Type.data
-                    element.description_expense = form.Description.data 
-                    element.date_purchase = form.Date.data
-                    element.amount = form.Amount.data 
-                db.session.commit() 
-            
-                return redirect(url_for("views.show_expenses"))
-        else: 
-            return render_template("mod_expense.html", form=form)
+    expense = Expenses.query.filter(Expenses.user==current_user.email, Expenses.expense_id==request.form.get("id")).first()
+    if expense:
+        db.session.delete(expense)
+        db.session.commit() 
 
-       
+    return redirect(url_for("views.show_expenses"))
 
 
 

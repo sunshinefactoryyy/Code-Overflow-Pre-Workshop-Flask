@@ -4,7 +4,6 @@ from .models import Users
 from .forms import SignUp, Login
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import exc
 
 auth = Blueprint('auth', __name__)
 
@@ -22,8 +21,8 @@ def signup():
     
     form = SignUp(request.form)
     if form.validate_on_submit():
-        name = form.name.data if form.name.data else ''
-        new_user = Users(name=name, email=form.email.data, password=generate_password_hash(form.password.data, method='sha256'))
+        name = form.name.data.strip() if form.name.data.strip() else ''
+        new_user = Users(name=name, email=form.email.data.lower(), password=generate_password_hash(form.password.data, method='sha256'))
         db.session.add(new_user)
         db.session.commit()
 
@@ -40,7 +39,7 @@ def login():
 
     form = Login(request.form)
     if form.validate_on_submit():
-        user = Users.query.filter_by(email=form.email.data).first()
+        user = Users.query.filter_by(email=form.email.data.lower()).first()
 
         if user:
             if check_password_hash(user.password, form.password.data):

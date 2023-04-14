@@ -5,10 +5,12 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationE
 from .models import Users
 import re
 
+
 class Login(FlaskForm):
     email = EmailField('Email', validators=[DataRequired(), Email(message='Invalid Email')]) 
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
+
 
 class SignUp(FlaskForm):
     name = StringField('First Name', validators=[Optional(), Length(min=2, max=20)]) 
@@ -18,7 +20,7 @@ class SignUp(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_email(self, email):
-        user = Users.query.filter_by(email=email.data).first()
+        user = Users.query.filter_by(email=email.data.lower()).first()
         if user:
             raise ValidationError("This email is already in use, please use a different one.")
     def validate_password(self, password):
@@ -26,33 +28,16 @@ class SignUp(FlaskForm):
             raise ValidationError("Password needs to contain at least one letter, number, and special character.")
 
 
+
 Type_of_expense =["Personal", "House", "Transport", "Pets", "Miscellaneous"]
 
-class AddExpense(FlaskForm):
-    Expense_id = HiddenField("id")
-    Type= SelectField('Type of expense', choices=[(typ, typ) for typ in Type_of_expense])
-    Description = StringField('Description of the expense.', validators=[DataRequired()])
-    Date= DateField('Purchase Date', format='%Y-%m-%d', validators=[DataRequired()])
-    Amount = FloatField('Amount (£)', validators=[DataRequired(message="Invalid amount. Please, introduce a positive number")])
+class EditExpense(FlaskForm):
+    id = HiddenField('')
+    type = SelectField('Type of expense', choices=[(typ, typ) for typ in Type_of_expense])
+    description = StringField('Description of the expense.', validators=[DataRequired("Description required")])
+    date= DateField('Purchase Date', format='%Y-%m-%d', validators=[DataRequired()])
+    amount = FloatField('Amount (£)', validators=[DataRequired("Invalid amount, input should be a number greater than 0.")])
 
-    Add = SubmitField('Add new expense')
-
-    def validate_Amount (self, Amount): 
-        if Amount.data <= 0: 
-            raise ValidationError ("Invalid amount, please introduce a number greater than 0")
-
-
-class ModExpense(FlaskForm):
-    Expense_id = HiddenField("id")
-    Type= SelectField('Type of expense', choices=[(typ, typ) for typ in Type_of_expense])
-    Description = StringField('Description of the expense.', validators=[DataRequired()])
-    Date= DateField('Purchase Date', format='%Y-%m-%d', validators=[DataRequired()])
-    Amount = FloatField('Amount (£)', validators=[DataRequired(message="Invalid amount. Please, introduce a positive number")])
-
-    Save_changes = SubmitField('Save Changes')
-    Delete = SubmitField('Delete Expense')
-
-    def validate_Amount (self, Amount): 
-        if Amount.data <= 0: 
-            raise ValidationError ("Invalid amount, please introduce a number greater than 0")
-        
+    def validate_amount (self, amount): 
+        if amount.data <= 0: 
+            raise ValidationError("Invalid amount, input should be a number greater than 0.")

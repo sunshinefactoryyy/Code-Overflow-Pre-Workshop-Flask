@@ -1,5 +1,14 @@
 {% extends "base.html" %}
+
 {% block body %}
+
+<script>
+    function delExpense(desc) {
+        if (!window.confirm("Are you sure you want to delete Expense that has a description of:\n"+desc)) {
+            return false
+        }
+    }
+</script>
 
 <style>
 
@@ -29,12 +38,18 @@
     </tr>
     {% for expense in expenses %}
     <tr class="row">
-        <td>{{ expense.type_expense }}</td>
-        <td>{{ expense.description_expense }}</td>
+        <td>{{ expense.type }}</td>
+        <td>{{ expense.description }}</td>
         <td>{{ expense.date_purchase }}</td>
         <td>{{ expense.amount }}</td>
-        <td><a href="/mod_expense?id={{expense.expense_id}}">Edit/Delete</a></td>
-
+        <td><a href="/mod_expense/{{expense.expense_id}}">Edit</a></td>
+        <td>
+            <form onsubmit="return delExpense('{{expense.description}}')" method='POST' action='/del_expense'>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="id" value="{{ expense.expense_id }}">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
     </tr>
     
     {% endfor %}
