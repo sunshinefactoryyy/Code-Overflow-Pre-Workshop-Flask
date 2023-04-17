@@ -2,13 +2,12 @@
 {% block body %}
 <br>
 <br>
-<a href="/">Home</a>
-<br>
-<br>
 <p> Enter your email and password to log in</p>
 
 <div class='form'>
     <form method='POST' action=''>
+        <div class="msg">{{ msg }}</div>
+        <h2 class="title">Welcome</h2>
         {{ form.csrf_token }}
         
         {{ form.email.label }}
