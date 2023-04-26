@@ -1,56 +1,68 @@
 {% extends "base.html" %}
 {% block body %}
-<br>
-<br>
-<p> Enter your name and email to create your account</p>
+<link rel="stylesheet" href="..\static\styles\form.css">
 
-<div class='form'>
-    <form method='POST' action=''>
-        {{ form.csrf_token }}
+<div class="signin-wrapper">
+    <div class="sign-panels">
+        <div class="signup">
+            <div class="signin-title">
+                <span>Sign Up</span>
+                <p>Create a new account.</p>
+            </div>
 
-        {{ form.name.label }}
-        {{ form.name }}
-        
-        {% if form.name.errors %}
-            {% for error in form.name.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-        {% endif %}
+            <form method='POST' action=''>
+                {{ form.csrf_token }}
+                <div class="form-floating">
+                    <label style="padding-left:30px;" for="floatingUsername">Username</label>
+                    {{ form.name }}
+                </div>
 
-        <br>
-        {{ form.email.label }}
-        {{ form.email }}
-        
-        {% if form.email.errors %}
-            {% for error in form.email.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-        {% endif %}
+                {% if form.name.errors %}
+                    {% for error in form.name.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
 
-        <br>
-        {{ form.password.label }}
-        {{ form.password }}
-        
-        {% if form.password.errors %}
-            {% for error in form.password.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-        {% endif %}
+                <div class="form-floating mb-3">
+                    <label style="padding-left:30px;" for="floatingEmail">Email</label>
+                    {{ form.email }}
+                </div>
 
-        <br>
-        {{ form.confirm_password.label }}
-        {{ form.confirm_password }}
-        
-        {% if form.confirm_password.errors %}
-            {% for error in form.confirm_password.errors %}
-                <span>{{ error }}</span>
-            {% endfor %}
-        {% endif %}
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+    
+                <div class="form-floating">
+                    <label style="padding-left:30px;" for="floatingPassword">Password</label>
+                    {{ form.password }}
+                </div>
 
-        <br>
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
 
-        {{ form.submit }}
-    </form>
+                <div class="form-floating">
+                    <label style="padding-left:30px;" for="floatingRPassword">Repeat Password</label>
+                    {{ form.confirm_password }}
+                </div>
+
+                {% if form.confirm_password.errors %}
+                    {% for error in form.confirm_password.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+
+                <input type="checkbox" id="signin-checkbox">
+                <button type="submit" href="#" class="btn-signin">Sign Up</button>
+                <a href="/login" class="btn-login btn-fade">Already have an account, Sign In <i
+                        class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock body %}

@@ -1,17 +1,4 @@
 @import 'https://fonts.googleapis.com/css?family=Montserrat:300, 400, 700&display=swap';
-* {
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
-}
-html {
-	font-size: 10px;
-	font-family: 'Montserrat', sans-serif;
-	scroll-behavior: smooth;
-}
-a {
-	text-decoration: none;
-}
 .container {
 	min-height: 100vh;
 	width: 100%;
@@ -23,14 +10,6 @@ img {
 	height: 100%;
 	width: 100%;
 	object-fit: cover;
-}
-p {
-	color: black;
-	font-size: 1.4rem;
-	margin-top: 5px;
-	line-height: 2.5rem;
-	font-weight: 300;
-	letter-spacing: 0.05rem;
 }
 .section-title {
 	font-size: 4rem;
@@ -578,7 +557,7 @@ p {
 
 	/* Hero */
 	#hero h1 {
-		font-size: 7rem;
+		font-size: 6rem;
 	}
 	/* End Hero */
 
@@ -701,4 +680,3 @@ p {
 	}
 }
 /* End  Media Query For Desktop */
-
