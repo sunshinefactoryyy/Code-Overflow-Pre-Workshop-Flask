@@ -9,50 +9,22 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/')
 def home(): 
-    if current_user.is_active:
-        return redirect(url_for("views.show_expenses"))
+    # insert code here
     return render_template("home.html")
 
 
 @auth.route('/signup', methods=['GET','POST'])
 def signup():
-    if current_user.is_active:
-        return redirect(url_for("views.show_expenses"))
-    
-    form = SignUp(request.form)
-    if form.validate_on_submit():
-        name = form.name.data.strip() if form.name.data.strip() else ''
-        new_user = Users(name=name, email=form.email.data.lower(), password=generate_password_hash(form.password.data, method='sha256'))
-        db.session.add(new_user)
-        db.session.commit()
+    # insert code here
 
-        flash('Account created!', category='success')
-        return redirect(url_for('auth.login')) 
-
-    return render_template("signup.html", form=form)
+    return render_template("signup.html")
 
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
-    if current_user.is_active:
-        return redirect(url_for("views.show_expenses"))
+    # insert code here
 
-    form = Login(request.form)
-    if form.validate_on_submit():
-        user = Users.query.filter_by(email=form.email.data.lower()).first()
-
-        if user:
-            if check_password_hash(user.password, form.password.data):
-                flash('Logged in successfully', category='success')
-                login_user(user, remember=True)
-                return redirect(url_for('views.show_expenses'))
-            
-            else:
-                flash('Incorrect password, please try again.', category='error')
-        else:
-            flash('No account with that email address.', category='error')
-
-    return render_template('login.html', form=form)
+    return render_template('login.html')
 
 
 @auth.route('/logout')
