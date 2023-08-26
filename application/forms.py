@@ -28,15 +28,15 @@ class SignUp(FlaskForm):
             raise ValidationError("Password needs to contain at least one letter, number, and special character.")
 
 
-
 Type_of_expense =["Personal", "House", "Transport", "Pets", "Miscellaneous"]
+
 
 class EditExpense(FlaskForm):
     id = HiddenField('')
     type = SelectField('Type of expense', choices=[(typ, typ) for typ in Type_of_expense])
     description = StringField('Description of the expense.', validators=[DataRequired("Description required")])
     date= DateField('Purchase Date', format='%Y-%m-%d', validators=[DataRequired()])
-    amount = FloatField('Amount (£)', validators=[DataRequired("Invalid amount, input should be a number greater than 0.")])
+    amount = FloatField('Amount (S$)', validators=[DataRequired("Invalid amount, input should be a number greater than 0.")])
 
     def validate_amount (self, amount): 
         if amount.data <= 0: 

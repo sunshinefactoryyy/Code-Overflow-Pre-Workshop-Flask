@@ -7,6 +7,7 @@ from datetime import date
 
 views = Blueprint('views', __name__)
 
+
 # CREATE
 @views.route('/add_expense', methods=['GET', 'POST'])
 @login_required
@@ -41,7 +42,8 @@ def show_expenses():
     for expense in expenses_user: 
         total_amount += expense.amount
 
-    return render_template("expenses.html", expenses=expenses_user, name_user=current_user.name, total=round(total_amount,2)) 
+    return render_template("expenses.html", expenses=expenses_user,
+                           name_user=current_user.name, total=round(total_amount,2))
 
 
 # UPDATE
@@ -53,7 +55,6 @@ def modifying_expenses(expense_id):
     if not expense:
         flash('You do not have this expense.', category='error')
         return redirect(url_for("views.show_expenses"))
-    
 
     form = EditExpense(request.form)
 
